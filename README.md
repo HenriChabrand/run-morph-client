@@ -54,16 +54,71 @@ card.newStatus('Status Label', 'Status Value', 'SUCCESS');
 card.newAction('OPEN_URL', 'https://henri.pm/');
 ```
 
-#### CardContent
-This class manages card content. Depending upon content type (`text` or `status`), it allows manipulation of label, value and color (for `status` type)
+## CardContent
+This class is used to manage the content of a `Card`. Depending upon the `type` (`text` or `status`), it facilitates the manipulation of `label`, `value`, and `color` (only for `status` type).
+
+#### Text Content
+
+You can add text to your card using the `newText` method of the `Card` class.
 
 ```javascript
-let content = card.newStatus('Status Label', 'Status Value', 'SUCCESS');
-
-content.setLabel('New Label');
-content.setValue('New Value');
-content.setColor('WARNING');
+let cardContent = card.newText('Label', 'Text Value');
 ```
+
+This will create a new text content with the given label and value. You can access and modify the properties of `CardContent` using:
+
+```javascript
+cardContent.setLabel('New Label');
+cardContent.setValue('New Value');
+```
+Please note that color change is not applicable for text content type.
+
+#### Status Content
+You can add a status to your card using the `newStatus` method of the `Card` class.
+
+```javascript
+let cardContent = card.newStatus('Label', 'Status Value', 'SUCCESS');
+```
+
+This will create a new status content with the given label, value, and color. You can access and modify the properties of `CardContent` like label, value, and color through:
+
+```javascript
+cardContent.setLabel('New Status Label');
+cardContent.setValue('New Status Value');
+cardContent.setColor('WARNING');
+```
+
+Make sure to use a valid color. The acceptable colors for statuses are 'SUCCESS', 'WARNING', 'DANGER', 'INFO' and 'DEFAULT'.
+
+```javascript
+cardContent.setColor('INVALID_COLOR'); // Throws error
+```
+
+> Please remember, the `setColor` function is only available for 'status' type of CardContent and not for 'text'.
+
+## Action
+
+The `Action` class is used to handle actions that can occur in your cards. These actions can be defined as `ActionType` and include 'REQUEST', 'OPEN_URL', and 'OPEN_URL_IN_IFRAME'. 
+
+An action can be addition as a global action (applies to all cards), or individually to a specific card. Note that 'OPEN_URL' and 'OPEN_URL_IN_IFRAME' types require a URL.
+ 
+#### URL Open Action
+
+To create an instance of an `Action` of type 'OPEN_URL', you need to define the type, name, and the URL to be opened.
+
+```javascript
+let action = card.newAction('OPEN_URL', 'Open URL Action Name', 'https://www.example.com');
+```
+
+#### iFrame Open Action
+
+Similarly, to create an instance of an `Action` of type 'OPEN_URL_IN_IFRAME', you need to define the type, name, and the URL to be opened in iFrame.
+
+```javascript
+let action = card.newAction('OPEN_URL_IN_IFRAME', 'iFrame URL Action Name', 'https://www.example.com');
+```
+> Note: The URL is mandatory for 'OPEN_URL' and 'OPEN_URL_IN_IFRAME' action types. An attempt to create such action types without a URL raises an error.
+
 
 ## Building Cards
 
