@@ -1,0 +1,21 @@
+{
+  "name": "run-morph-client",
+  "version": "1.0.1",
+  "description": "Unified integration extension for HubSpot, Salesforce and Intercom.",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+   "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Henri Chabrand",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.6",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.5.1"
+  }
+}
