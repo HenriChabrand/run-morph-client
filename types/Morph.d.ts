@@ -40,7 +40,7 @@ declare class CardBuilder {
     actions: Action[];
     constructor(requestId: string, apiKey: string);
     newCard(title: string): Card;
-    newGlobalAction(type: ActionType, name: string, url?: string): Action;
+    newRootAction(type: ActionType, name: string, url?: string): Action;
     build(): Promise<boolean>;
 }
 export { Morph, CardBuilder, Card, CardContent };

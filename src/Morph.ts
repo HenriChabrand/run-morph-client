@@ -131,7 +131,7 @@ class CardBuilder {
         return newCard;
     }
 
-    newRootction(type: ActionType, name: string, url?: string): Action {
+    newRootAction(type: ActionType, name: string, url?: string): Action {
       let newRootAction = new Action(type, name, url);
       this.actions.push(newRootAction);
       return newRootAction;
