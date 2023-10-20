@@ -131,34 +131,38 @@ class CardBuilder {
         return newCard;
     }
 
-    newGlobalAction(type: ActionType, name: string, url?: string): Action {
-      let newGlobalAction = new Action(type, name, url);
-      this.actions.push(newGlobalAction);
-      return newGlobalAction;
+    newRootction(type: ActionType, name: string, url?: string): Action {
+      let newRootAction = new Action(type, name, url);
+      this.actions.push(newRootAction);
+      return newRootAction;
     }
 
 
     async build(): Promise<boolean> {
-    const cardExtension = {
-      global:{
-        actions: this.actions
-      },
-      cards: this.cards.map((card) => ({
-        title: card.title,
-        ...(card.link && { link: card.link }),
-        contents: card.contents,
-        actions: card.actions
-      }))
+    const card_view_response = { 
+        type: 'card_view',
+        completed: true,
+        card_view: {
+            root:{
+                actions: this.actions
+            },
+            cards: this.cards.map((card) => ({
+                title: card.title,
+                ...(card.link && { link: card.link }),
+                contents: card.contents,
+                actions: card.actions
+            }))
+        }
     };
 
     try {
       const response = await axios({
         method: 'POST',
-        url:`https://tlgbrx45cg.execute-api.eu-west-3.amazonaws.com/v0/requests/${this.requestId}/cards`,
+        url:`https://tlgbrx45cg.execute-api.eu-west-3.amazonaws.com/v0/requests/${this.requestId}/response`,
         headers: {
           'x-api-key': this.apiKey
         },
-        data: cardExtension
+        data: card_view_response
       });
 
       // Check the HTTP status code
