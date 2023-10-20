@@ -1,5 +1,5 @@
 type CardColor = 'SUCCESS' | 'WARNING' | 'DANGER' | 'INFO' | 'DEFAULT';
-type ActionType = 'request' | 'open_url' | 'open_url_in_iframe';
+type ActionType = 'REQUEST' | 'OPEN_URL' | 'OPEN_URL_IN_IFRAME';
 declare class Morph {
     apiKey: string;
     constructor(apiKey: string);
@@ -8,8 +8,8 @@ declare class Morph {
 declare class Action {
     type: ActionType;
     name: string;
-    url: string;
-    constructor(type: ActionType, name: string, url: string);
+    url?: string;
+    constructor(type: ActionType, name: string, url?: string);
 }
 declare class CardContent {
     type: string;
@@ -25,11 +25,13 @@ declare class Card {
     title: string;
     contents: CardContent[];
     actions: Action[];
-    constructor(title: string);
+    link?: string;
+    constructor(title: string, url?: string);
     setTitle(title: string): void;
+    setLink(url: string): void;
     newText(label: string, value: string): CardContent;
     newStatus(label: string, value: string, color: CardColor): CardContent;
-    addAction(type: ActionType, name: string, url: string): Action;
+    newAction(type: ActionType, name: string, url?: string): Action;
 }
 declare class CardBuilder {
     cards: Card[];
@@ -38,7 +40,7 @@ declare class CardBuilder {
     actions: Action[];
     constructor(requestId: string, apiKey: string);
     newCard(title: string): Card;
-    addHeaderAction(type: ActionType, name: string, url: string): Action;
+    newGlobalAction(type: ActionType, name: string, url?: string): Action;
     build(): Promise<boolean>;
 }
 export { Morph, CardBuilder, Card, CardContent };
