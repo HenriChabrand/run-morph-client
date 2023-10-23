@@ -5,16 +5,22 @@ type ActionType = 'REQUEST' | 'OPEN_URL' | 'OPEN_URL_IN_IFRAME';
 
 class Morph {
   apiKey: string;
+  apiSecret: string;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, apiSecret: string) {
     if (!apiKey) {
       throw new Error('An API key is required');
     }
     this.apiKey = apiKey;
+
+    if (!apiSecret) {
+      throw new Error('An API secret is required');
+    }
+    this.apiSecret = apiSecret;
   }
 
   newCardBuilder(requestId: string): CardBuilder {
-    return new CardBuilder(requestId, this.apiKey);
+    return new CardBuilder(requestId, this.apiKey, this.apiSecret);
   }
 }
 
@@ -112,15 +118,17 @@ class Card {
 class CardBuilder {
     cards: Card[];
     apiKey: string;
+    apiSecret: string;
     requestId: string;
     actions: Action[];
   
-    constructor(requestId: string, apiKey: string) {
+    constructor(requestId: string, apiKey: string, apiSecret: string) {
         if (!apiKey || !requestId) {
-          throw new Error('Both apiKey and requestId are required');
+          throw new Error('RequestId are required');
         }
         this.cards = [];
         this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
         this.requestId = requestId;
         this.actions = [];
     }
@@ -161,6 +169,7 @@ class CardBuilder {
         url:`https://tlgbrx45cg.execute-api.eu-west-3.amazonaws.com/v0/requests/${this.requestId}/response`,
         headers: {
           'x-api-key': this.apiKey
+          'x-api-secret': this.apiSecret
         },
         data: card_view_response
       });

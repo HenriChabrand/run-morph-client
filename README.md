@@ -19,7 +19,7 @@ Before getting started, ensure that you have an API key. You can obtain this key
 ```javascript
 import { Morph } from 'run-morph-client';
 
-let morph = new Morph('YOUR_API_KEY');
+let morph = new Morph('YOUR_API_KEY', 'YOUR_API_SECRET');
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ let morph = new Morph('YOUR_API_KEY');
 This is the main class and it should be initialized with an API Key.
 
 ```javascript
-let morph = new Morph('YOUR_API_KEY');
+let morph = new Morph('YOUR_API_KEY', 'YOUR_API_SECRET');
 ```
 
 #### CardBuilder
