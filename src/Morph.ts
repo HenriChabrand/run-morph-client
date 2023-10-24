@@ -168,7 +168,7 @@ class CardBuilder {
         method: 'POST',
         url:`https://tlgbrx45cg.execute-api.eu-west-3.amazonaws.com/v0/requests/${this.requestId}/response`,
         headers: {
-          'x-api-key': this.apiKey
+          'x-api-key': this.apiKey,
           'x-api-secret': this.apiSecret
         },
         data: card_view_response

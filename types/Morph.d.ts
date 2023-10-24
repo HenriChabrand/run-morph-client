@@ -2,7 +2,8 @@ type CardColor = 'SUCCESS' | 'WARNING' | 'DANGER' | 'INFO' | 'DEFAULT';
 type ActionType = 'REQUEST' | 'OPEN_URL' | 'OPEN_URL_IN_IFRAME';
 declare class Morph {
     apiKey: string;
-    constructor(apiKey: string);
+    apiSecret: string;
+    constructor(apiKey: string, apiSecret: string);
     newCardBuilder(requestId: string): CardBuilder;
 }
 declare class Action {
@@ -36,9 +37,10 @@ declare class Card {
 declare class CardBuilder {
     cards: Card[];
     apiKey: string;
+    apiSecret: string;
     requestId: string;
     actions: Action[];
-    constructor(requestId: string, apiKey: string);
+    constructor(requestId: string, apiKey: string, apiSecret: string);
     newCard(title: string): Card;
     newRootAction(type: ActionType, name: string, url?: string): Action;
     build(): Promise<boolean>;
