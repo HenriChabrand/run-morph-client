@@ -26,16 +26,16 @@ class Morph {
 
 class Action {
   type: ActionType;
-  name: string;
+  label: string;
   url?: string;
 
-  constructor(type: ActionType, name: string, url?: string) {
+  constructor(type: ActionType, label: string, url?: string) {
     if ((type === 'OPEN_URL' || type === 'OPEN_URL_IN_IFRAME') && !url) {
       throw new Error('A URL is required for OPEN_URL and OPEN_URL_IN_IFRAME action types');
     }
 
     this.type = type;
-    this.name = name;
+    this.label = label;
     this.url = url;
   }
 }
@@ -107,8 +107,8 @@ class Card {
         return newStatusContent;
     }
 
-    newAction(type: ActionType, name: string, url?: string): Action {
-      let newAction = new Action(type, name, url);
+    newAction(type: ActionType, label: string, url?: string): Action {
+      let newAction = new Action(type, label, url);
       this.actions.push(newAction);
       return newAction;
     }
@@ -139,8 +139,8 @@ class CardBuilder {
         return newCard;
     }
 
-    newRootAction(type: ActionType, name: string, url?: string): Action {
-      let newRootAction = new Action(type, name, url);
+    newRootAction(type: ActionType, label: string, url?: string): Action {
+      let newRootAction = new Action(type, label, url);
       this.actions.push(newRootAction);
       return newRootAction;
     }
