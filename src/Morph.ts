@@ -166,7 +166,7 @@ class CardBuilder {
     try {
       const response = await axios({
         method: 'POST',
-        url:`https://tlgbrx45cg.execute-api.eu-west-3.amazonaws.com/v0/requests/${this.requestId}/response`,
+        url:`https://api.runmorph.dev/v0/requests/${this.requestId}/response`,
         headers: {
           'x-api-key': this.apiKey,
           'x-api-secret': this.apiSecret

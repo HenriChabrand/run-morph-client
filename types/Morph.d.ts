@@ -8,9 +8,9 @@ declare class Morph {
 }
 declare class Action {
     type: ActionType;
-    name: string;
+    label: string;
     url?: string;
-    constructor(type: ActionType, name: string, url?: string);
+    constructor(type: ActionType, label: string, url?: string);
 }
 declare class CardContent {
     type: string;
@@ -32,7 +32,7 @@ declare class Card {
     setLink(url: string): void;
     newText(label: string, value: string): CardContent;
     newStatus(label: string, value: string, color: CardColor): CardContent;
-    newAction(type: ActionType, name: string, url?: string): Action;
+    newAction(type: ActionType, label: string, url?: string): Action;
 }
 declare class CardBuilder {
     cards: Card[];
@@ -42,7 +42,7 @@ declare class CardBuilder {
     actions: Action[];
     constructor(requestId: string, apiKey: string, apiSecret: string);
     newCard(title: string): Card;
-    newRootAction(type: ActionType, name: string, url?: string): Action;
+    newRootAction(type: ActionType, label: string, url?: string): Action;
     build(): Promise<boolean>;
 }
 export { Morph, CardBuilder, Card, CardContent };
