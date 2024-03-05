@@ -1,6 +1,6 @@
 {
   "name": "run-morph-client",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Unified integration extension for HubSpot, Salesforce and Intercom.",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
