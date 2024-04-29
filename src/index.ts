@@ -1,5 +1,5 @@
 // Import the classes from their respective files
-import { Morph, CardBuilder, Card, CardContent } from './Morph';
+import { Morph, CardBuilder, Card, CardContent, CardViewResponse } from './Morph';
 
 // Export the classes, so they are accessible when your package is imported
-export { Morph, CardBuilder, Card, CardContent};
+export { Morph, CardBuilder, Card, CardContent, CardViewResponse};

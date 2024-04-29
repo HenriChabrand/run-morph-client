@@ -19,8 +19,12 @@ class Morph {
     this.apiSecret = apiSecret;
   }
 
-  newCardBuilder(requestId: string): CardBuilder {
-    return new CardBuilder(requestId, this.apiKey, this.apiSecret);
+  newCardBuilder(requestId: string, isSynchronous?:boolean): CardBuilder {
+    return new CardBuilder(requestId, isSynchronous || null, this.apiKey, this.apiSecret);
+  }
+
+  newActionResponseBuilder(requestId: string, isSynchronous?:boolean): ActionResponseBuilder {
+    return new ActionResponseBuilder(requestId, isSynchronous || null, this.apiKey, this.apiSecret);
   }
 }
 
@@ -28,15 +32,24 @@ class Action {
   type: ActionType;
   label: string;
   url?: string;
+  id?: string
 
-  constructor(type: ActionType, label: string, url?: string) {
+  constructor(type: ActionType, label: string, url?: string, id?: string) {
     if ((type === 'OPEN_URL' || type === 'OPEN_URL_IN_IFRAME') && !url) {
       throw new Error('A URL is required for OPEN_URL and OPEN_URL_IN_IFRAME action types');
+    } else if (type === 'REQUEST' && !id) {
+      throw new Error('An ID is required for REQUEST action type');
     }
-
     this.type = type;
     this.label = label;
-    this.url = url;
+   
+    if(url){
+      this.url = url;
+    }
+
+    if(id){
+      this.id = id;
+    }
   }
 }
 
@@ -107,22 +120,38 @@ class Card {
         return newStatusContent;
     }
 
-    newAction(type: ActionType, label: string, url?: string): Action {
-      let newAction = new Action(type, label, url);
+    newAction(type: ActionType, label: string, url?: string, id?: string): Action {
+      let newAction = new Action(type, label, url, id);
       this.actions.push(newAction);
       return newAction;
     }
-
 }
+
+export type CardViewResponse = {
+  type: 'card_view';
+  completed: boolean;
+  card_view: {
+    root: {
+      actions: Action[];
+    };
+    cards: {
+      title: string;
+      link?: string;
+      contents: CardContent[];
+      actions: Action[];
+    }[];
+  };
+};
 
 class CardBuilder {
     cards: Card[];
     apiKey: string;
     apiSecret: string;
     requestId: string;
+    isSynchronous: boolean | null;
     actions: Action[];
   
-    constructor(requestId: string, apiKey: string, apiSecret: string) {
+    constructor(requestId: string, isSynchronous: boolean | null, apiKey: string, apiSecret: string) {
         if (!apiKey || !requestId) {
           throw new Error('RequestId are required');
         }
@@ -130,6 +159,7 @@ class CardBuilder {
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
         this.requestId = requestId;
+        this.isSynchronous = isSynchronous;
         this.actions = [];
     }
 
@@ -139,15 +169,15 @@ class CardBuilder {
         return newCard;
     }
 
-    newRootAction(type: ActionType, label: string, url?: string): Action {
-      let newRootAction = new Action(type, label, url);
+    newRootAction(type: ActionType, label: string, url?: string, id?: string): Action {
+      let newRootAction = new Action(type, label, url, id);
       this.actions.push(newRootAction);
       return newRootAction;
     }
 
 
-    async build(): Promise<boolean> {
-    const card_view_response = { 
+    async build(): Promise<CardViewResponse> {
+    const card_view_response:CardViewResponse = { 
         type: 'card_view',
         completed: true,
         card_view: {
@@ -163,6 +193,10 @@ class CardBuilder {
         }
     };
 
+    if(this.isSynchronous){
+      return card_view_response;
+    }
+
     try {
       const response = await axios({
         method: 'POST',
@@ -177,17 +211,78 @@ class CardBuilder {
       // Check the HTTP status code
       // between 200-299 inclusive indicate success
       if (response.status >= 200 && response.status < 300) {
-        return true;
+        return card_view_response;
       } else {
-        return false;
+        throw new Error(JSON.stringify(response));
       }
     } catch (error) {
-      console.error(error);
-      return false;
+      throw new Error(JSON.stringify(error));
     }
   }
 }
 
+type ActionResponse = {
+  type: 'action';
+  completed: boolean;
+  action: {
+    succeed: boolean;
+    message: string;
+  };
+};
+
+class ActionResponseBuilder {
+  apiKey: string;
+  apiSecret: string;
+  requestId: string;
+  isSynchronous: boolean | null;
+
+  constructor(requestId: string, isSynchronous: boolean | null, apiKey: string, apiSecret: string) {
+      if (!apiKey || !requestId) {
+        throw new Error('RequestId are required');
+      }
+      this.apiKey = apiKey;
+      this.apiSecret = apiSecret;
+      this.requestId = requestId;
+      this.isSynchronous = isSynchronous;
+  }
+
+  async build(succeed: boolean,  message?: string): Promise<boolean | ActionResponse> {
+  const action_response:ActionResponse = { 
+      type: 'action',
+      completed: true,
+      action: {
+        succeed: succeed,
+        message: message ? message : ( succeed ? 'Succeed' : 'Failed' )
+      }
+  };
+
+  if(this.isSynchronous){
+    return action_response;
+  }
+
+  try {
+    const response = await axios({
+      method: 'POST',
+      url:`https://api.runmorph.dev/v0/requests/${this.requestId}/response`,
+      headers: {
+        'x-api-key': this.apiKey,
+        'x-api-secret': this.apiSecret
+      },
+      data: action_response
+    });
+
+    // Check the HTTP status code
+    // between 200-299 inclusive indicate success
+    if (response.status >= 200 && response.status < 300) {
+      return true;
+    } else {
+      throw new Error(JSON.stringify(response));
+    }
+  } catch (error) {
+    throw new Error(JSON.stringify(error));
+  }
+}
+}
 
 
 export { Morph, CardBuilder, Card, CardContent }
